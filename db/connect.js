@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize")
-const { database_name, database_user, database_password, database_url } = require("../config")
+const { database_name, database_user, database_password, database_url, database_ssl } = require("../config")
 
 
 module.exports.connection = async (sequelize) => {
@@ -15,6 +15,9 @@ module.exports.sequelize = new Sequelize(database_name, database_user, database_
   host: database_url,
   dialect: 'postgres',
   dialectOptions: {
+    ssl: {
+      require: database_ssl
+    },
     dateString: true,
     typeCast: true,
   }
