@@ -1,6 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-const { port, debug } = require("./config.json");
+const { port, debug } = require("./config");
 const app = express();
 const multer = require("multer");
 const bodyParser = require("body-parser");

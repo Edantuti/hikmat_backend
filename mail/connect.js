@@ -4,7 +4,7 @@ const {
   email_port,
   email_stmp_user,
   email_stmp_password,
-} = require("../config.json");
+} = require("../config");
 
 const config = {
   host: email_url,

@@ -3,7 +3,7 @@ const { sequelize } = require("../../db/connect");
 const { OrderModel } = require("../../db/models/OrderModel");
 const { CartModel } = require("../../db/models/CartModel");
 const { sign, verify, decode } = require("jsonwebtoken");
-const { tokenHashValue } = require("../../config.json");
+const { tokenHashValue } = require("../../config");
 const { ProductModel } = require("../../db/models/ProductModel");
 const { DealsModel } = require("../../db/models/DealsModel");
 

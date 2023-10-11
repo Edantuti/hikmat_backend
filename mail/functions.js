@@ -1,5 +1,5 @@
 const { Transporter: transporter } = require("./connect");
-const { email_stmp_user, frontend_url } = require("../config.json");
+const { email_stmp_user, frontend_url } = require("../config");
 
 function MailObjectGenerator(from, to, subject, textBody, htmlBody) {
   this.from = from;
