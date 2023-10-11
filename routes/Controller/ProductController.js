@@ -1,3 +1,4 @@
+const { backend_url } = require("../../config");
 const {
   AuthCheckAdminMiddleware,
   AuthCheckMiddleware,
@@ -18,7 +19,7 @@ router.post("/", AuthCheckAdminMiddleware, async (req, res) => {
   console.log(req.body);
   let photos = [];
   for (let file of req.files) {
-    photos.push(`http://localhost:5000/public/images/${file.filename}`);
+    photos.push(`${backend_url}/public/images/${file.filename}`);
   }
   req.body.photos = [...photos];
   req.body.benefits = JSON.parse(req.body.benefits);
@@ -55,7 +56,7 @@ router.patch("/", AuthCheckAdminMiddleware, async (req, res) => {
   let photos = req.body.photos ? [req.body.photos] : [];
   let id = req.query.id;
   for (let file of req.files) {
-    photos.push(`http://localhost:5000/public/images/${file.filename}`);
+    photos.push(`${backend_url}/public/images/${file.filename}`);
   }
   req.body.photos = [...photos];
   req.body.benefits = JSON.parse(req.body.benefits);

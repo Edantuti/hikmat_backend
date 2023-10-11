@@ -16,6 +16,7 @@ const process = require("node:process");
 const { verificationMailer } = require("../../mail/functions");
 const { AuthCheckMiddleware } = require("../../middleware/authentication");
 const router = require("express").Router();
+const { backend_url } = require("../../config")
 
 router.post("/register", async (req, res) => {
   try {
@@ -55,7 +56,7 @@ router.post("/register", async (req, res) => {
 router.post("/update", AuthCheckMiddleware, async (req, res) => {
   console.log(req.body);
   console.log(req.files);
-  const data = { ...req.body, profile_url: `http://localhost:5000/${req.files[0].path}` }
+  const data = { ...req.body, profile_url: `${backend_url}/${req.files[0].path}` }
   const result = await modifyUser(data, req.body.userid);
   if (result.status === "FAILED")
     return res.status(500).json({ message: "Internal Server Error" });
