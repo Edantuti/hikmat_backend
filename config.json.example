@@ -1,0 +1,15 @@
+{
+  "port": "",
+  "debug": "",
+  "passwordHashValue": "",
+  "tokenHashValue": "",
+  "database_name": "",
+  "database_user": "",
+  "database_password": "",
+  "database_url": "",
+  "email_url": "",
+  "email_port":"" ,
+  "email_stmp_user": "",
+  "email_stmp_password": "",
+  "frontend_url": ""
+}
