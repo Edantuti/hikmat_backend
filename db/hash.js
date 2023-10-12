@@ -3,8 +3,9 @@ const { passwordHashValue } = require("../config")
 
 module.exports.hash = async (value) => {
   try {
-    return await bcrypt.hash(value, passwordHashValue)
+    return bcrypt.hash(value, parseInt(passwordHashValue))
   } catch (error) {
+
     console.error(error)
   }
 }

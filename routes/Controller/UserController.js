@@ -24,7 +24,7 @@ router.post("/register", async (req, res) => {
     req.body = {
       ...req.body,
       password: await hash(req.body.password),
-      profile_url: `http://127.0.0.1:5000/public/images/${profile.filename}`,
+      profile_url: `${backend_ul}/public/images/${profile.filename}`,
     };
     const userData = await getUser(req.body)
     if (userData === null) {
