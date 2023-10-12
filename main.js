@@ -6,13 +6,14 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const path = require("node:path");
 const cors = require("cors");
-
+const cron = require("node-cron")
 const { AdminRouter } = require("./routes/Controller/AdminController");
 const { UserRouter } = require("./routes/Controller/UserController");
 const { OrdersRouter } = require("./routes/Controller/OrderController");
 const { ProductsRouter } = require("./routes/Controller/ProductController");
 const { CartRouter } = require("./routes/Controller/CartController");
 const { connection, sequelize } = require("./db/connect");
+const { DealsModel } = require('./db/models/DealsModel')
 const {
   retrieveBrand,
   retrieveCategory,
@@ -20,7 +21,26 @@ const {
 const { Transporter } = require("./mail/connect");
 const { DealsRouter } = require("./routes/Controller/DealsController");
 
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const deals = await sequelize.transaction(async (t) => {
+      const data = await DealsModel.findAll({ transaction: t })
+      return data
+    })
+    deals.forEach((deal) => {
+      if (new Date(deal.getDataValue("expiry_date")) < new Date()) {
+        deal.destroy()
 
+      }
+
+    })
+  } catch (error) {
+    console.error(error)
+  }
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"
+})
 
 app.use(cors());
 app.use("/public", express.static("./public"));
