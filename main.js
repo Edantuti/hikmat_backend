@@ -4,7 +4,6 @@ const { port, debug } = require("./config");
 const app = express();
 const multer = require("multer");
 const bodyParser = require("body-parser");
-const path = require("node:path");
 const cors = require("cors");
 const cron = require("node-cron")
 const { AdminRouter } = require("./routes/Controller/AdminController");
@@ -20,6 +19,8 @@ const {
 } = require("./routes/Service/AdminService");
 const { Transporter } = require("./mail/connect");
 const { DealsRouter } = require("./routes/Controller/DealsController");
+const multerS3 = require("multer-s3")
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3")
 
 cron.schedule('0 0 * * *', async () => {
   try {
@@ -30,7 +31,6 @@ cron.schedule('0 0 * * *', async () => {
     deals.forEach((deal) => {
       if (new Date(deal.getDataValue("expiry_date")) < new Date()) {
         deal.destroy()
-
       }
 
     })
@@ -48,24 +48,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   multer({
-    storage: multer.diskStorage({
-      destination: (req, file, callBack) => {
-        callBack(null, "./public/images");
+    storage: multerS3({
+      s3: new S3Client(),
+      bucket: process.env.STORAGE,
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      metadata: function(req, file, cb) {
+        console.log(file)
+        cb(null, { fieldName: file.fieldname })
       },
-      filename: (req, file, callBack) => {
-        callBack(
-          null,
-          path.basename(file.originalname, path.extname(file.originalname)) +
-          "-" +
-          file.fieldname +
-          "-" +
-          Date.now() +
-          path.extname(file.originalname),
-        );
-      },
-    }),
-  }).any(),
-);
+      key: function(req, file, cb) {
+        console.log(file)
+        cb(null, `${file.fieldname}-${Date.now().toString()}`)
+      }
+    })
+  }).any()
+)
 app.use(
   morgan(
     ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
@@ -75,7 +72,28 @@ if (debug)
   app.use(
     morgan(":method :url :status :response-time ms - :res[content-length]"),
   );
-
+app.get("/photos/:file", async (req, res) => {
+  const filename = req.params.file
+  console.log(filename)
+  const s3 = new S3Client();
+  const command = new GetObjectCommand({
+    Bucket: process.env.STORAGE,
+    Key: filename
+  })
+  try {
+    const response = await s3.send(command);
+    console.log(response.ContentType)
+    const data = await response.Body.transformToString('base64')
+    const img = Buffer.from(data, 'base64');
+    res.writeHead(200, {
+      'Content-Type': response.ContentType,
+      'Content-Length': response.ContentLength
+    });
+    res.end(img);
+  } catch (error) {
+    console.error(error)
+  }
+})
 app.get("/api", (req, res) => {
   res.json("Still active.");
 });

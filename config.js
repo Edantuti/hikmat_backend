@@ -3,7 +3,7 @@ require("dotenv").config()
 
 module.exports = {
   port: process.env.PORT,
-  debug: false,
+  debug: process.env.DEBUG,
   passwordHashValue: process.env.PASSWORDHASH,
   tokenHashValue: process.env.TOKENHASH,
   database_name: process.env.DBNAME,

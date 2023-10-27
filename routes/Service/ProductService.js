@@ -8,6 +8,7 @@ const { retrieveUser } = require("./UserService");
 const { createBrand, createCategory } = require("./AdminService");
 const { DealsModel } = require("../../db/models/DealsModel");
 const { QueryTypes } = require("sequelize");
+const { getUrl } = require("../../storage/functions");
 
 module.exports.createProduct = async (data) => {
   console.log(data);
@@ -96,7 +97,7 @@ module.exports.retrieveProduct = async (data, offset = 0, limit = 12) => {
           DealsModel
         ],
       });
-
+      
       return product;
     });
     return { status: "SUCCESS", result };
@@ -187,6 +188,10 @@ module.exports.RetrieveReview = async (data) => {
         limit: 3,
         transaction: t,
       });
+      review.rows.forEach(async (view)=>{
+        const user = view.dataValues.User
+        return view.set("Users", user.set("profile_url", await getUrl(user.getDataValue("profile_url"))))
+      })
       return review;
     });
     return { status: "SUCCESS", result };

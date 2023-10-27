@@ -6,8 +6,7 @@ const { sign, verify, decode } = require("jsonwebtoken");
 const { tokenHashValue } = require("../../config");
 const { ProductModel } = require("../../db/models/ProductModel");
 const { DealsModel } = require("../../db/models/DealsModel");
-
-//TODO: Mail ticket generator
+const { getUrl } = require("../../storage/functions");
 
 module.exports.createUser = async (data) => {
   console.log(data);
@@ -77,6 +76,7 @@ module.exports.retrieveUser = async (data) => {
         },
         { transaction: t },
       );
+      
       return user;
     });
     return result;
@@ -119,7 +119,7 @@ module.exports.modifyUser = async (data, id) => {
         },
         { where: { id: id }, returning: true, transaction: t },
       );
-      return user[1];
+      return user[1][0];
     });
     return result;
   } catch (error) {

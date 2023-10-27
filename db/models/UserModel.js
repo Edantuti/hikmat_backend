@@ -11,7 +11,7 @@ const User = sequelize.define('User', {
   },
   profile_url: {
     type: DataTypes.TEXT,
-    defaultValue: ""
+    defaultValue: "",
   },
   firstName: {
     type: DataTypes.STRING,

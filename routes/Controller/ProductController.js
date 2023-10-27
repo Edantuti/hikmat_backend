@@ -14,12 +14,11 @@ const {
 
 const router = require("express").Router();
 
-//TODO: Adding the parent product to child product
 router.post("/", AuthCheckAdminMiddleware, async (req, res) => {
   console.log(req.body);
   let photos = [];
   for (let file of req.files) {
-    photos.push(`${backend_url}/public/images/${file.filename}`);
+    photos.push(`${backend_url}/photos/${file.key}`);
   }
   req.body.photos = [...photos];
   req.body.benefits = JSON.parse(req.body.benefits);
@@ -56,7 +55,7 @@ router.patch("/", AuthCheckAdminMiddleware, async (req, res) => {
   let photos = req.body.photos ? [req.body.photos] : [];
   let id = req.query.id;
   for (let file of req.files) {
-    photos.push(`${backend_url}/public/images/${file.filename}`);
+    photos.push(`${backend_url}/photos/${file.key}`);
   }
   req.body.photos = [...photos];
   req.body.benefits = JSON.parse(req.body.benefits);

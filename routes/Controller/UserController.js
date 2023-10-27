@@ -9,22 +9,23 @@ const {
   modifyUser,
   changeUserPassword,
 } = require("../Service/UserService");
+const { S3Client, DeleteObjectCommand } = require("@aws-sdk/client-s3")
+
 const { hash, check } = require("../../db/hash");
-const { unlink } = require("node:fs/promises");
-const path = require("node:path");
-const process = require("node:process");
+
 const { verificationMailer } = require("../../mail/functions");
 const { AuthCheckMiddleware } = require("../../middleware/authentication");
+const { backend_url } = require("../../config");
 const router = require("express").Router();
-const { backend_url } = require("../../config")
 
 router.post("/register", async (req, res) => {
   try {
     const profile = req.files[0];
+    console.log(profile)
     req.body = {
       ...req.body,
       password: await hash(req.body.password),
-      profile_url: `${backend_url}/public/images/${profile.filename}`,
+      profile_url: `${backend_url}/photos/${profile.key}`,
     };
     const userData = await getUser(req.body)
     if (userData === null) {
@@ -39,9 +40,7 @@ router.post("/register", async (req, res) => {
         status: "SUCCESS",
       });
     } else {
-      await unlink(
-        path.join(process.cwd(), `/public/images/${profile.filename}`),
-      );
+      deleteFile(profile)
       res.status(400).json({
         status: "FAILED",
         message: "User already exists",
@@ -53,16 +52,39 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/update", AuthCheckMiddleware, async (req, res) => {
-  console.log(req.body);
-  console.log(req.files);
-  const data = { ...req.body, profile_url: `${backend_url}/${req.files[0].path}` }
-  const result = await modifyUser(data, req.body.userid);
-  if (result.status === "FAILED")
-    return res.status(500).json({ message: "Internal Server Error" });
-  return res.json(result)
 
+function deleteFile(file) {
+  const command = new DeleteObjectCommand({
+    Bucket: process.env.STORAGE,
+    Key: file.key
+  }
+  );
+  try {
+    const client = new S3Client({});
+    client.send(command).then((response) => console.log(response)).catch((err) => console.error(err))
+  } catch (err) {
+    console.error(err)
+  }
+
+}
+
+
+
+router.post("/update", AuthCheckMiddleware, async (req, res) => {
+  try {
+    const data = { ...req.body, profile_url: `${backend_url}/photos/${req.files[0].key}` }
+    const result = await modifyUser(data, req.body.userid);
+    if (result.status === "FAILED")
+      return res.status(500).json({ message: "Internal Server Error" });
+
+    return res.json(result)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: "Internal Server Error" })
+  }
 });
+
+
 
 router.get("/verify", async (req, res) => {
   console.log(req.query.token);
