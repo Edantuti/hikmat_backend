@@ -15,7 +15,6 @@ const {
 const router = require("express").Router();
 
 router.post("/", AuthCheckAdminMiddleware, async (req, res) => {
-  console.log(req.body);
   let photos = [];
   for (let file of req.files) {
     photos.push(`${backend_url}/photos/${file.key}`);
@@ -29,7 +28,6 @@ router.post("/", AuthCheckAdminMiddleware, async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  console.log(req.query);
   const data = {};
   if (req.query.brand) {
     data.brand = req.query.brand;
@@ -65,14 +63,12 @@ router.patch("/", AuthCheckAdminMiddleware, async (req, res) => {
 });
 
 router.delete("/", AuthCheckAdminMiddleware, async (req, res) => {
-  console.log(req.query);
   const data = await removeProduct(req.query);
   if (data.status === "FAILED") return res.status(400).json(data)
   res.json({ message: "Done" });
 });
 
 router.get("/reviews", async (req, res) => {
-  console.log(req.query);
   const data = await RetrieveReview({
     productId: req.query.id,
     offset: req.query.offset,
@@ -82,7 +78,6 @@ router.get("/reviews", async (req, res) => {
 });
 
 router.post("/reviews", AuthCheckMiddleware, async (req, res) => {
-  console.log(req.query);
   const data = await createReview({
     ...req.body,
     productId: req.query.id,

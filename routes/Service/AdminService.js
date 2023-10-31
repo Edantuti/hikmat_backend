@@ -6,7 +6,6 @@ const { sequelize } = require("../../db/connect")
 
 
 module.exports.createCategory = async (data) => {
-  console.log(data)
   try {
     const result = await sequelize.transaction(async (t) => {
       const category = await CategoryModel.findOrCreate(
@@ -22,7 +21,6 @@ module.exports.createCategory = async (data) => {
 }
 
 module.exports.createBrand = async (data) => {
-  console.log(data)
   try {
     const result = await sequelize.transaction(async (t) => {
       const brand = await BrandModel.findOrCreate(
@@ -38,7 +36,6 @@ module.exports.createBrand = async (data) => {
 }
 
 module.exports.deleteBrand = async (data) => {
-  console.log(data)
   try {
     const result = await sequelize.transaction(async (t) => {
       const brand = await BrandModel.destroy(
@@ -54,7 +51,6 @@ module.exports.deleteBrand = async (data) => {
 }
 
 module.exports.deleteCategory = async (data) => {
-  console.log(data)
   try {
     const result = await sequelize.transaction(async (t) => {
       const category = await CategoryModel.delete(

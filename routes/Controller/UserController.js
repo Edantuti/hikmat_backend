@@ -21,7 +21,6 @@ const router = require("express").Router();
 router.post("/register", async (req, res) => {
   try {
     const profile = req.files[0];
-    console.log(profile)
     req.body = {
       ...req.body,
       password: await hash(req.body.password),
@@ -30,7 +29,6 @@ router.post("/register", async (req, res) => {
     const userData = await getUser(req.body)
     if (userData === null) {
       const { result } = await createUser(req.body);
-      console.log(result);
       const token = await tokenGenerator({
         email: result.dataValues.email,
         userid: result.dataValues.id,
@@ -87,7 +85,6 @@ router.post("/update", AuthCheckMiddleware, async (req, res) => {
 
 
 router.get("/verify", async (req, res) => {
-  console.log(req.query.token);
   try {
     const { userid, email } = await tokenDeserialzer(req.query.token);
     await changeVerifiedStatus(userid, true);
@@ -146,7 +143,6 @@ router.post("/password", AuthCheckMiddleware, async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const user = await retrieveUser({ email: req.body.email });
-  console.log(user);
   if (!user)
     return res
       .status(404)

@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../connect");
+const { PaymentModel } = require("./PaymentModel");
 const { ProductModel } = require("./ProductModel");
 const { UserModel } = require("./UserModel");
 
@@ -42,6 +43,7 @@ const Order = sequelize.define("Order", {
 });
 
 Order.belongsTo(UserModel, { foreignKey: "userId" });
+Order.belongsTo(PaymentModel, { onDelete: "CASCADE", onUpdate: "RESTRICT", hooks: true, foreignKey: "paymentId", targetKey: "razorpay_payment_id" });
 Order.belongsToMany(ProductModel, { through: "OrderProduct", foreignKey: "orderId", constraints: false, unique: false })
 
 ProductModel.belongsToMany(Order, { onDelete: 'CASCADE', through: 'OrderProduct', foreignKey: "productId", constraints: false, unique: false, hooks: true });

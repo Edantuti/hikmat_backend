@@ -2,6 +2,7 @@
   "name": "blog-project-backend",
   "version": "1.0.0",
   "description": "Project for a client",
+  "type": "commonjs",
   "main": "main.js",
   "scripts": {
     "dev": "nodemon",
@@ -27,6 +28,7 @@
     "nodemailer-express-handlebars": "^6.1.0",
     "pg": "^8.11.2",
     "pg-hstore": "^2.3.4",
+    "razorpay": "^2.9.2",
     "sequelize": "^6.32.1"
   }
 }

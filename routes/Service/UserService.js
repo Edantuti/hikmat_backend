@@ -9,7 +9,6 @@ const { DealsModel } = require("../../db/models/DealsModel");
 const { getUrl } = require("../../storage/functions");
 
 module.exports.createUser = async (data) => {
-  console.log(data);
   try {
     const result = await sequelize.transaction(async (t) => {
       const user = UserModel.create(data, { transaction: t });
@@ -76,7 +75,7 @@ module.exports.retrieveUser = async (data) => {
         },
         { transaction: t },
       );
-      
+
       return user;
     });
     return result;
@@ -146,7 +145,6 @@ module.exports.getUserOrders = async (data) => {
       }
       return orders;
     });
-    console.log(result);
     return { status: "SUCCESS", result };
   } catch (error) {
     console.error(error);
@@ -161,7 +159,6 @@ module.exports.getUserCart = async (data) => {
         include: [CartModel],
         transaction: t,
       });
-      console.log(user);
       const carts = [];
 
       for (let f of user.Carts) {

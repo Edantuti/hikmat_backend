@@ -11,7 +11,6 @@ module.exports.addCartItem = async (data) => {
         const item = user.Carts.find((item, index) => {
           if (item.productId === data.productId) return true
         })
-        console.log(item)
         if (item) {
           await CartModel.update({ quantity: data.quantity },
             {
@@ -71,7 +70,6 @@ module.exports.removeCartItem = async (id) => {
           id: id
         }
       }, { transaction: t })
-      console.log(cart)
       return cart
     })
     return { status: "SUCCESS", result }

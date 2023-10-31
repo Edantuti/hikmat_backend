@@ -6,6 +6,11 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cron = require("node-cron")
+const multerS3 = require("multer-s3")
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3")
+const Razorpay = require("razorpay")
+
+
 const { AdminRouter } = require("./routes/Controller/AdminController");
 const { UserRouter } = require("./routes/Controller/UserController");
 const { OrdersRouter } = require("./routes/Controller/OrderController");
@@ -13,14 +18,13 @@ const { ProductsRouter } = require("./routes/Controller/ProductController");
 const { CartRouter } = require("./routes/Controller/CartController");
 const { connection, sequelize } = require("./db/connect");
 const { DealsModel } = require('./db/models/DealsModel')
+const { DealsRouter } = require("./routes/Controller/DealsController");
 const {
   retrieveBrand,
   retrieveCategory,
 } = require("./routes/Service/AdminService");
 const { Transporter } = require("./mail/connect");
-const { DealsRouter } = require("./routes/Controller/DealsController");
-const multerS3 = require("multer-s3")
-const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3")
+const { PaymentController } = require("./routes/Controller/PaymentController");
 
 cron.schedule('0 0 * * *', async () => {
   try {
@@ -53,11 +57,9 @@ app.use(
       bucket: process.env.STORAGE,
       contentType: multerS3.AUTO_CONTENT_TYPE,
       metadata: function(req, file, cb) {
-        console.log(file)
         cb(null, { fieldName: file.fieldname })
       },
       key: function(req, file, cb) {
-        console.log(file)
         cb(null, `${file.fieldname}-${Date.now().toString()}`)
       }
     })
@@ -74,7 +76,6 @@ if (debug)
   );
 app.get("/photos/:file", async (req, res) => {
   const filename = req.params.file
-  console.log(filename)
   const s3 = new S3Client();
   const command = new GetObjectCommand({
     Bucket: process.env.STORAGE,
@@ -82,7 +83,6 @@ app.get("/photos/:file", async (req, res) => {
   })
   try {
     const response = await s3.send(command);
-    console.log(response.ContentType)
     const data = await response.Body.transformToString('base64')
     const img = Buffer.from(data, 'base64');
     res.writeHead(200, {
@@ -116,6 +116,7 @@ app.use("/api/orders", OrdersRouter);
 app.use("/api/products", ProductsRouter);
 app.use("/api/cart", CartRouter);
 app.use("/api/deals", DealsRouter);
+app.use("/api/checkout", PaymentController);
 app.use((err, req, res, next) => {
   res.status(400).json(err.message);
   next();

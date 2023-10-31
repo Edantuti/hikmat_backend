@@ -2,6 +2,7 @@ const { OrderModel } = require("../../db/models/OrderModel")
 const { sequelize } = require("../../db/connect")
 const { ProductModel } = require("../../db/models/ProductModel")
 const { UserModel } = require("../../db/models/UserModel")
+const { PaymentModel } = require("../../db/models/PaymentModel")
 
 
 module.exports.createOrder = async (data) => {
@@ -21,10 +22,11 @@ module.exports.createOrder = async (data) => {
           city: data.city,
           pincode: data.pincode,
           state: data.state,
+          paymentId: data.payment_id,
           userId: data.userId,
         },
         {
-          include: [ProductModel, UserModel],
+          include: [PaymentModel, ProductModel, UserModel],
           transaction: t
         }
       )
@@ -56,7 +58,7 @@ module.exports.getAllOrders = async () => {
   try {
     const result = await sequelize.transaction(async (t) => {
       const orders = await OrderModel.findAll({
-        transaction: t, include: [ProductModel, {
+        transaction: t, include: [PaymentModel, ProductModel, {
           model: UserModel,
           attributes: { exclude: ["password", "updatedAt"] }
         }]

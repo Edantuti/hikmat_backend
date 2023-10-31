@@ -29,14 +29,11 @@ router.patch("/delivered", AuthCheckMiddleware, modifier)
 router.patch("/cancelled", AuthCheckMiddleware, modifier)
 
 router.get("/", AuthCheckMiddleware, async (req, res) => {
-  console.log(req.query.userId)
-  console.log(await getUserOrders(req.query.userId))
   res.json(await getUserOrders(req.query.userId))
 })
 
 router.get("/all", AuthCheckAdminMiddleware, async (req, res) => {
   const data = await getAllOrders()
-  console.log(data)
   res.json(data)
 })
 router.use((err, req, res, next) => {

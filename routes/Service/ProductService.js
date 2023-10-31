@@ -11,7 +11,6 @@ const { QueryTypes } = require("sequelize");
 const { getUrl } = require("../../storage/functions");
 
 module.exports.createProduct = async (data) => {
-  console.log(data);
   try {
     const result = await sequelize.transaction(async (t) => {
       await createBrand({ name: data.brand });
@@ -27,8 +26,6 @@ module.exports.createProduct = async (data) => {
 };
 
 module.exports.modifyProduct = async (data, id) => {
-  console.log(data);
-  console.log(id);
   //TODO:Creating a function which is going to delete changed data including photos
 
   try {
@@ -97,7 +94,7 @@ module.exports.retrieveProduct = async (data, offset = 0, limit = 12) => {
           DealsModel
         ],
       });
-      
+
       return product;
     });
     return { status: "SUCCESS", result };
@@ -108,7 +105,6 @@ module.exports.retrieveProduct = async (data, offset = 0, limit = 12) => {
 };
 
 module.exports.removeProduct = async (data) => {
-  console.log(data);
   try {
     const result = await sequelize.transaction(async (t) => {
       const product = await ProductModel.findByPk(
@@ -129,7 +125,6 @@ module.exports.removeProduct = async (data) => {
       if (product.Deals.length)
         product.removeDeals()
       await product.destroy({ transaction: t })
-      console.log(product)
       return product;
     });
     return { status: "SUCCESS", result };
@@ -140,7 +135,6 @@ module.exports.removeProduct = async (data) => {
 };
 
 module.exports.createReview = async (data) => {
-  console.log(data);
   try {
     const userData = await retrieveUser({ id: data.userId });
     const result = await sequelize.transaction(async (t) => {
@@ -175,7 +169,6 @@ module.exports.createReview = async (data) => {
 };
 
 module.exports.RetrieveReview = async (data) => {
-  console.log(data);
   try {
     const result = await sequelize.transaction(async (t) => {
       const review = await ReviewModel.findAndCountAll({
@@ -188,7 +181,7 @@ module.exports.RetrieveReview = async (data) => {
         limit: 3,
         transaction: t,
       });
-      review.rows.forEach(async (view)=>{
+      review.rows.forEach(async (view) => {
         const user = view.dataValues.User
         return view.set("Users", user.set("profile_url", await getUrl(user.getDataValue("profile_url"))))
       })
