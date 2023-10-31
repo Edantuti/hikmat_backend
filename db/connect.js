@@ -15,8 +15,10 @@ module.exports.connection = async (sequelize) => {
 module.exports.sequelize = new Sequelize(database_name, database_user, database_password, {
   host: database_url,
   dialect: 'postgres',
-  ssl: process.env.SSL,
   dialectOptions: {
+    ssl: {
+      require: database_ssl
+    },
     dateString: true,
     typeCast: true,
   }
