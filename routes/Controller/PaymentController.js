@@ -23,7 +23,7 @@ router.post("/verify", async (req, res) => {
       .update(body.toString())
       .digest("hex");
     if (expectedSignature === razorpay_signature) {
-      res.status(200).json({ url: `checkout/success?payment_id=${razorpay_payment_id}` })
+      res.status(200).json({ url: `success?payment_id=${razorpay_payment_id}` })
     } else {
       res.status(400).json("not valid")
     }
