@@ -53,7 +53,7 @@ module.exports.deleteBrand = async (data) => {
 module.exports.deleteCategory = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const category = await CategoryModel.delete(
+      const category = await CategoryModel.destroy(
         { where: { id: data.id }, transaction: t }
       )
       return category
