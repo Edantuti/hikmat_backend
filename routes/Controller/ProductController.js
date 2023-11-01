@@ -50,7 +50,7 @@ router.get("/", async (req, res) => {
 });
 
 router.patch("/", AuthCheckAdminMiddleware, async (req, res) => {
-  let photos = req.body.photos ? [req.body.photos] : [];
+  let photos = req.body.photos ? [...req.body.photos] : [];
   let id = req.query.id;
   for (let file of req.files) {
     photos.push(`${backend_url}/photos/${file.key}`);
