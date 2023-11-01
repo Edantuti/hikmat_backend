@@ -19,7 +19,7 @@ router.post("/", AuthCheckAdminMiddleware, async (req, res) => {
   for (let file of req.files) {
     photos.push(`${backend_url}/photos/${file.key}`);
   }
-  req.body.photos = [...photos];
+  req.body.photos = photos;
   req.body.benefits = JSON.parse(req.body.benefits);
   req.body.details = JSON.parse(req.body.details);
   const product = await createProduct(req.body);
@@ -55,7 +55,7 @@ router.patch("/", AuthCheckAdminMiddleware, async (req, res) => {
   for (let file of req.files) {
     photos.push(`${backend_url}/photos/${file.key}`);
   }
-  req.body.photos = [...photos];
+  req.body.photos = photos;
   req.body.benefits = JSON.parse(req.body.benefits);
   req.body.details = JSON.parse(req.body.details);
   await modifyProduct(req.body, id);
