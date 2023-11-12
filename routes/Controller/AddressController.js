@@ -5,6 +5,7 @@ const router = require("express").Router();
 
 router.get("/", AuthCheckMiddleware, async (req, res) => {
   try {
+    console.log(req.query.userid)
     const data = await retrieveAddress(req.query.userid)
     if (data.status === "FAILED") {
       return res.status(400).json({ "message": "Something went wrong", error: data.error })

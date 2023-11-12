@@ -7,6 +7,7 @@ module.exports.addCartItem = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
       const user = await UserModel.findByPk(data.userId, { transaction: t, include: [CartModel] })
+      console.log(user)
       if (user.Carts.length) {
         const item = user.Carts.find((item, index) => {
           if (item.productId === data.productId) return true
