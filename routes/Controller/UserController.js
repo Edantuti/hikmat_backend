@@ -70,7 +70,11 @@ function deleteFile(file) {
 
 router.post("/update", AuthCheckMiddleware, async (req, res) => {
   try {
-    const data = { ...req.body, profile_url: `${backend_url}/photos/${req.files[0].key}` }
+    let data = {}
+    if (req.files.length)
+      data = { ...req.body, profile_url: `${backend_url}/photos/${req.files[0].key}` }
+    else
+      data = req.body
     const result = await modifyUser(data, req.body.userid);
     if (result.status === "FAILED")
       return res.status(500).json({ message: "Internal Server Error" });
