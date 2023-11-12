@@ -4,9 +4,13 @@ const { sequelize } = require("../../db/connect");
 module.exports.createDeals = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const product = await ProductModel.findByPk(data.productId, { transaction: t })
-      const deals = await DealsModel.create({ name: data.name, image: product.photos[0], discount: data.discount, expiry_date: data.expiry_date }, { transaction: t });
-      await deals.addProducts(product, { transaction: t })
+      const deals = await DealsModel.create({ name: data.name, image: data.photo, discount: data.discount, expiry_date: data.expiry_date }, { transaction: t });
+      console.log(data.productIds)
+      for (let id of JSON.parse(data.productIds)) {
+        const product = await ProductModel.findByPk(id, { include: [DealsModel], transaction: t })
+        if (await product.hasDeals(deals)) continue;
+        await deals.addProducts(product, { transaction: t })
+      }
       return deals;
     })
     return { status: "SUCCESS", result };
@@ -35,7 +39,7 @@ module.exports.modifyDeals = async (data) => {
 module.exports.retrieveDeals = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const deals = await DealsModel.findAll({ where: data, include: [{ model: ProductModel, include: [DealsModel] }], transaction: t })
+      const deals = await DealsModel.findAll({ where: data, transaction: t })
       return deals
     })
     return { status: "SUCCESS", result }
