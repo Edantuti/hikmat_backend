@@ -90,7 +90,7 @@ app.get("/photos/:file", async (req, res) => {
     if (req.query.type && req.query.type === "low") {
       img.resize(300, 300)
     } else {
-      img.resize(1280, 720)
+      img.resize(1280, 720, { fit: 'inside' })
     }
     const result = await img.webp({ lossless: true, quality: quality, force: true }).toBuffer()
     res.writeHead(200, {
