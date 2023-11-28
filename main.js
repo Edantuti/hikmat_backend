@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cron = require("node-cron")
 const multerS3 = require("multer-s3")
+const sharp = require('sharp')
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3")
 
 const { AdminRouter } = require("./routes/Controller/AdminController");
@@ -26,6 +27,7 @@ const { Transporter } = require("./mail/connect");
 const { PaymentController } = require("./routes/Controller/PaymentController");
 
 cron.schedule('0 0 * * *', async () => {
+  console.log("Executing cron job for deleting any outdated deals.")
   try {
     const deals = await sequelize.transaction(async (t) => {
       const data = await DealsModel.findAll({ transaction: t })
@@ -82,13 +84,19 @@ app.get("/photos/:file", async (req, res) => {
   })
   try {
     const response = await s3.send(command);
-    const data = await response.Body.transformToString('base64')
-    const img = Buffer.from(data, 'base64');
+    const data = await response.Body.transformToByteArray()
+    const img = sharp(data.buffer)
+    let quality = 20
+    if (req.query.type && req.query.type === "low") {
+      img.resize(300, 300)
+    } else {
+      img.resize(1280, 720)
+    }
+    const result = await img.webp({ lossless: true, quality: quality, force: true }).toBuffer()
     res.writeHead(200, {
-      'Content-Type': response.ContentType,
-      'Content-Length': response.ContentLength
+      'Content-Type': 'image/webp',
     });
-    res.end(img);
+    res.end(result);
   } catch (error) {
     console.error(error)
   }

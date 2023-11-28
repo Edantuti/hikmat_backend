@@ -16,9 +16,9 @@ module.exports.sequelize = new Sequelize(database_name, database_user, database_
   host: database_url,
   dialect: 'postgres',
   dialectOptions: {
-    ssl: {
-      require: database_ssl
-    },
+    // ssl: {
+    //   require: database_ssl
+    // },
     dateString: true,
     typeCast: true,
   }
