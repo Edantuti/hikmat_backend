@@ -1,20 +1,21 @@
-require("dotenv").config()
+import dotenv from "dotenv"
+
+dotenv.config()
 
 
-module.exports = {
-  port: process.env.PORT,
-  debug: process.env.DEBUG,
-  passwordHashValue: process.env.PASSWORDHASH,
-  tokenHashValue: process.env.TOKENHASH,
-  database_name: process.env.DBNAME,
-  database_user: process.env.DBUSER,
-  database_password: process.env.DBPASSWORD,
-  database_url: process.env.DBURL,
-  database_ssl: process.env.SSL,
-  email_url: process.env.EMAILURL,
-  email_port: process.env.EMAILPORT,
-  email_stmp_user: process.env.EMAILUSER,
-  email_stmp_password: process.env.EMAILPASSWORD,
-  frontend_url: process.env.FRONTEND,
-  backend_url: process.env.BACKEND
-}
+export const  port =  process.env.PORT
+export const  debug = process.env.DEBUG
+export const  bucket = process.env.STORAGE
+export const  passwordHashValue = process.env.PASSWORDHASH
+export const  tokenHashValue = process.env.TOKENHASH
+export const  database_name = process.env.DBNAME
+export const  database_user = process.env.DBUSER
+export const  database_password = process.env.DBPASSWORD
+export const  database_url = process.env.DBURL
+export const  database_ssl = process.env.SSL
+export const  email_url = process.env.EMAILURL
+export const  email_port = process.env.EMAILPORT
+export const  email_stmp_user = process.env.EMAILUSER
+export const  email_stmp_password = process.env.EMAILPASSWORD
+export const  frontend_url = process.env.FRONTEND
+export const  backend_url = process.env.BACKEND

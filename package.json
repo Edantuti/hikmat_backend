@@ -2,7 +2,7 @@
   "name": "blog-project-backend",
   "version": "1.0.0",
   "description": "Project for a client",
-  "type": "commonjs",
+  "type": "module",
   "main": "main.js",
   "scripts": {
     "dev": "nodemon",

@@ -1,12 +1,13 @@
-const { UserModel } = require("../db/models/UserModel");
-const {
-  tokenVerifier,
-  tokenDeserialzer,
-} = require("../routes/Service/UserService");
-module.exports.AuthCheckMiddleware = async (req, res, next) => {
+
+import { UserModel } from "../models/UserModel.js"
+import {
+  tokenChecker,
+  tokenDecoder,
+} from "../util.js"
+const AuthCheckMiddleware = async (req, res, next) => {
   try {
     const token = req.header("Authorization").substring(7);
-    if (!(await tokenVerifier(token)))
+    if (!(tokenChecker(token)))
       return res.status(401).json("User is Unauthorized");
     next();
   } catch (error) {
@@ -14,18 +15,24 @@ module.exports.AuthCheckMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports.AuthCheckAdminMiddleware = async (req, res, next) => {
+const AuthCheckAdminMiddleware = async (req, res, next) => {
   try {
     const token = req.header("Authorization").substring(7);
-    if (!(await tokenVerifier(token)))
+    if (!(tokenChecker(token)))
       return res.status(401).json("User is Unauthorized");
     const user = await UserModel.findByPk(
-      (await tokenDeserialzer(token)).userid,
+      (tokenDecoder(token)).userid,
     );
     if (!user.dataValues.isAdmin)
       return res.status(401).json("User is Unauthorized");
     next();
   } catch (error) {
+    console.error(error)
     return res.status(401).json("Unauthorized");
   }
 };
+
+export {
+  AuthCheckMiddleware,
+  AuthCheckAdminMiddleware
+}
