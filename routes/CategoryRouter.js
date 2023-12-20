@@ -4,7 +4,7 @@ import { postCategory, deleteCategory, getCategory } from "../controller/AdminCo
 import { AuthCheckAdminMiddleware } from "../middleware/authentication.js"
 
 const CategoryRouter = Router()
-CategoryRouter.get("/category", getCategory)
+CategoryRouter.get("/categories", getCategory)
 CategoryRouter.post("/admin/category", AuthCheckAdminMiddleware, postCategory)
 CategoryRouter.delete("/admin/category", AuthCheckAdminMiddleware, deleteCategory)
 
