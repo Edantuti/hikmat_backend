@@ -16,7 +16,8 @@ import {
   email_stmp_password,
   email_stmp_user,
   email_url,
-  database_user
+  database_user,
+  frontend_url,
 } from "./config.js"
 
 const tokenChecker = (token) => {
