@@ -1,3 +1,5 @@
+import { sequelize } from "../util.js"
+import {CategoryModel} from "../models/CategoryModel.js"
 
 const createCategory = async (data) => {
   try {
