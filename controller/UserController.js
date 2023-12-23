@@ -5,8 +5,8 @@ import {
   verificationMailer,
   hashPassword,
   checkPassword,
-  backend_url
 } from "../util.js"
+import { backend_url } from "../config.js";
 import {
   createUser,
   retrieveUser,

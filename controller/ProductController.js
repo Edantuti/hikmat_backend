@@ -9,6 +9,7 @@ import {
   retrieveReview,
   createReview
 } from "../actions/ReviewAction.js"
+import { backend_url } from "../config.js";
 const postProduct = async (req, res) => {
 
   let photos = [];
