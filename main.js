@@ -1,20 +1,19 @@
 import express from "express"
-
 import morgan from "morgan"
 const app = express();
 import bodyParser from "body-parser"
 import cors from "cors"
 import cron from "node-cron"
 
-import {MulterMiddleware} from "./middleware/multer.js"
+import { MulterMiddleware } from "./middleware/multer.js"
 import { port, debug } from "./config.js"
 
 import { cronJob } from "./utils/cron.js";
 import { FileRetrievalByID, sequelize, connectDB } from "./util.js"
 import { UserRouter } from "./routes/UserRouter.js"
-import {CategoryRouter} from "./routes/CategoryRouter.js"
-import {PaymentRouter} from "./routes/PaymentRouter.js"
-import {ProductRouter} from "./routes/ProductRouter.js"
+import { CategoryRouter } from "./routes/CategoryRouter.js"
+import { PaymentRouter } from "./routes/PaymentRouter.js"
+import { ProductRouter } from "./routes/ProductRouter.js"
 import { OrderRouter } from "./routes/OrdersRouter.js"
 import { BrandRouter } from "./routes/BrandRouter.js"
 import { CartRouter } from "./routes/CartRouter.js"
@@ -51,6 +50,8 @@ app.use("/api", AddressRouter);
 app.use("/api", PaymentRouter);
 app.use("/api", ProductRouter);
 app.use("/api", UserRouter);
+
+
 app.listen(port, async () => {
   console.log("Server has started.");
   connectDB(sequelize);

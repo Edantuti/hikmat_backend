@@ -20,12 +20,14 @@ const patchOrder = async (req, res) => {
 }
 
 const getOrders = async (req, res) => {
-  console.log(req.query)
+  if (!req.query.userid) {
+    return res.status(400).json({ message: "User ID is not specified" })
+  }
   const data = await retrieveUserOrders(req.query.userid)
   res.json(data)
 }
 
-const getAllOrders = async (_,res) => {
+const getAllOrders = async (_, res) => {
   const data = await retrieveAllOrders()
   res.json(data)
 }

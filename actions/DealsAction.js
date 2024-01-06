@@ -1,5 +1,6 @@
 import { sequelize } from "../util.js";
 import { DealsModel } from "../models/DealsModel.js";
+import { ProductModel } from "../models/ProductModel.js"
 const createDeals = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
@@ -59,9 +60,9 @@ const destoryDeals = async (data) => {
   }
 }
 
-export{
-    retrieveDeals,
-    destoryDeals,
-    createDeals,
-    modifyDeals
+export {
+  retrieveDeals,
+  destoryDeals,
+  createDeals,
+  modifyDeals
 }

@@ -25,7 +25,7 @@ const modifyAddress = async (data, userid) => {
         )
       })
     else {
-      this.createAddress(data, userid)
+      createAddress(data, userid)
     }
     return { status: "SUCCESS" }
   } catch (error) {
@@ -47,7 +47,7 @@ const retrieveAddress = async (userid) => {
   }
 }
 
-export{
+export {
   retrieveAddress,
   modifyAddress,
   createAddress

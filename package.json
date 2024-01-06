@@ -5,7 +5,7 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "node --watch main.js",
     "start": "node main.js",
     "test": "node ./node_modules/multer-s3/test/basic.js"
   },

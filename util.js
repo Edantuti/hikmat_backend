@@ -17,6 +17,7 @@ import {
   email_stmp_user,
   email_url,
   database_user,
+  sender_email,
   frontend_url,
 } from "./config.js"
 
@@ -78,37 +79,25 @@ const MailConfig = {
   },
 };
 
-const Transporter = nodemailer.createTransport(MailConfig);
-
-const MailObjectGenerator = (from, to, subject, textBody, htmlBody) => {
-  return {
-    from: from,
-    to: to,
-    subject: subject,
-    text: textBody,
-    html: htmlBody
-  }
-}
-
 const verificationMailer = async function(user_email, token) {
-  const MailObject = new MailObjectGenerator(
-    email_stmp_user,
-    user_email,
-    "Verification Mail",
-    `Click here to verify yourself. ${frontend_url}/verify/${token}`,
-    `<html> <head> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> <style> body { background-color: black; color: white; font-family: 'Roboto', sans-serif; } p { height:20rem; padding:2rem; font-size:20px; } a{ text-decoration:none; color: white; transition-duration: 150ms; } a:hover{ color:blue; font-style:italic; } </style> </head> <body> <h1>Hikmat</h1> <p>To verify, click this link, <a href="${frontend_url}auth/verify?token=${token}">Verify now</a></p> </body> </html>`
-  )
-  return this.Transporter.sendMail(MailObject.mail)
+  const MailObject = {
+    from: sender_email,
+    to: user_email,
+    subject: "Verification Mail",
+    text: `Click here to verify yourself. ${frontend_url}/verify/${token}`,
+    html: `<html> <head> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> <style> body { background-color: black; color: white; font-family: 'Roboto', sans-serif; } p { height:20rem; padding:2rem; font-size:20px; } a{ text-decoration:none; color: white; transition-duration: 150ms; } a:hover{ color:blue; font-style:italic; } </style> </head> <body> <h1>Hikmat</h1> <p>To verify, click this link, <a href="${frontend_url}auth/verify?token=${token}">Verify now</a></p> </body> </html>`
+  }
+  return nodemailer.createTransport(MailConfig).sendMail(MailObject)
 }
 const resetPasswordMailer = async function(user_email, token) {
-  const MailObject = new MailObjectGenerator(
-    email_stmp_user,
-    user_email,
-    "Reset Your Password",
-    `You can change your password now. Click here to change the password ${frontend_url}/resetpassword/${token}`,
-    `<p>You can change your password now. Click here to change the password <a href="${frontend_url}/resetpassword/${token}">Reset Password here</a></p>`,
-  );
-  return this.Transporter.sendMail(MailObject.mail)
+  const MailObject = {
+    from: sender_email,
+    to: user_email,
+    subject: "Reset Your Password",
+    text: `You can change your password now. Click here to change the password ${frontend_url}/resetpassword/${token}`,
+    html: `<p>You can change your password now. Click here to change the password <a href="${frontend_url}/resetpassword/${token}">Reset Password here</a></p>`,
+  }
+  return nodemailer.createTransport(MailConfig).sendMail(MailObject)
 }
 
 const connectDB = async (sequelize) => {

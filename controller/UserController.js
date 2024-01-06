@@ -22,14 +22,14 @@ const postUserRegister = async (req, res) => {
       password: hashPassword(req.body.password),
       profile_url: `${backend_url}/photos/${profile.key}`,
     };
-    const userData = await retrieveUser(req.body)
+    const userData = await retrieveUser({ email: req.body.email })
     if (userData === null) {
       const { result } = await createUser(req.body);
-      const token = await tokenEncoder({
+      const token = tokenEncoder({
         email: result.dataValues.email,
         userid: result.dataValues.id,
       });
-      await verificationMailer(result.dataValues.email, token);
+      await verificationMailer(result.getDataValue("email"), token);
       res.json({
         status: "SUCCESS",
       });
@@ -65,7 +65,7 @@ function deleteFile(file) {
 const postUserForgotPassword = async (req, res) => {
   const userData = await getUser(req.body);
   if (userData.status !== "FAILED") {
-    const token = await tokenEncoder({ email: userData.getDataValue("email"), userid: userData.getDataValue("id") })
+    const token = tokenEncoder({ email: userData.getDataValue("email"), userid: userData.getDataValue("id") })
     console.log(verificationMailer(req.body.email, token))
     res.json({
       status: "SUCCESS",
@@ -98,7 +98,7 @@ const postUserUpdate = async (req, res) => {
 }
 const getUserVerify = async (req, res) => {
   try {
-    const { userid, email } = await tokenDecoder(req.query.token);
+    const { userid, email } = tokenDecoder(req.query.token);
     await changeVerifiedStatus(userid, true);
     const user = await retrieveUser({ email: email });
     res.json({
@@ -127,7 +127,7 @@ const getUserPassword = async (req, res) => {
   }
 }
 const postUserPassword = async (req, res) => {
-  const { userid, email } = await tokenDecoder(req.headers.authorization.slice(7))
+  const { userid, email } = tokenDecoder(req.headers.authorization.slice(7))
   const password = hashPassword(req.body.password)
   const result = await changeUserPassword(password, email, userid);
   if (result.status === "FAILED") return res.status(500).json(result)

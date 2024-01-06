@@ -3,6 +3,7 @@ import { retrieveUser } from "./UserAction.js";
 import { sequelize } from "../util.js";
 import { ReviewModel } from "../models/ReviewModel.js";
 import { ProductModel } from "../models/ProductModel.js";
+import { UserModel } from "../models/UserModel.js"
 const createReview = async (data) => {
   try {
     const userData = await retrieveUser({ id: data.userId });
@@ -40,6 +41,7 @@ const createReview = async (data) => {
 const retrieveReview = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
+
       const review = await ReviewModel.findAndCountAll({
         where: {
           ProductId: data.productId,
@@ -50,6 +52,7 @@ const retrieveReview = async (data) => {
         limit: 3,
         transaction: t,
       });
+      console.log(review)
       review.rows.forEach(async (view) => {
         const user = view.dataValues.User
         return view.set("Users", user.set("profile_url", await getUrl(user.getDataValue("profile_url"))))
@@ -63,7 +66,7 @@ const retrieveReview = async (data) => {
   }
 };
 
-export{
-    retrieveReview,
-    createReview
+export {
+  retrieveReview,
+  createReview
 }

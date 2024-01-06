@@ -59,7 +59,10 @@ const retrieveAllOrders = async () => {
         transaction: t, include: [PaymentModel, ProductModel, {
           model: UserModel,
           attributes: { exclude: ["password", "updatedAt"] }
-        }]
+        }],
+        order: [
+          ['createdAt', 'DESC']
+        ]
       })
       return orders
     })
@@ -70,8 +73,10 @@ const retrieveAllOrders = async () => {
   }
 }
 
+
+
 export {
-    retrieveAllOrders,
-    modifyOrder,
-    createOrder,
+  retrieveAllOrders,
+  modifyOrder,
+  createOrder,
 }

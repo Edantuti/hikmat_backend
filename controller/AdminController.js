@@ -15,7 +15,7 @@ const deleteCategory = async (req, res) => {
     return res.status(500).json({ "message": "Internal Server Error" })
   return res.json(data)
 }
-const getCategory = async (_,res) => {
+const getCategory = async (_, res) => {
   const data = await retrieveCategory();
   if (data.status === "FAILED") return res.status(500).json({ "message": "internal server error" })
   return res.json(data)
@@ -33,7 +33,7 @@ const deleteBrand = async (req, res) => {
     return res.status(500).json({ "message": "Internal Server Error" })
   return res.json(data)
 }
-const getBrand = async (_,res) => {
+const getBrand = async (_, res) => {
   const data = await retrieveBrand();
   if (data.status === "FAILED") return res.status(500).json({ "message": "internal server error" })
   return res.json(data)

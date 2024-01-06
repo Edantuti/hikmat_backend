@@ -1,6 +1,6 @@
 import { UserModel } from "../models/UserModel.js";
 import { CartModel } from "../models/CartModel.js"
-import {OrderModel} from "../models/OrderModel.js"
+import { OrderModel } from "../models/OrderModel.js"
 import { ProductModel } from "../models/ProductModel.js";
 import { sequelize } from "../util.js";
 import { DealsModel } from "../models/DealsModel.js";
@@ -61,17 +61,19 @@ const changeUserPassword = async (password, email, id) => {
 const modifyUser = async (data, id) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const user = await UserModel.update(
+      const user = await UserModel.findByPk(id, { transaction: t })
+      await user.update(
         {
           profile_url: data.profile_url,
           email: data.email,
-          last: data.last,
-          first: data.first,
+          lastName: data.last,
+          firstName: data.first,
           phone: data.phone,
         },
-        { where: { id: id }, returning: true, transaction: t },
+        { transaction: t },
       );
-      return user[1][0];
+      await user.save({ transaction: t })
+      return user;
     });
     return result;
   } catch (error) {
@@ -84,19 +86,16 @@ const retrieveUserOrders = async (data) => {
 
   try {
     const result = await sequelize.transaction(async (t) => {
-      const user = await UserModel.findByPk(data, {
-        include: [OrderModel],
+      const orders = await OrderModel.findAll({
+        where: {
+          userId: data
+        },
+        include: [ProductModel],
+        order: [
+          ['createdAt', 'DESC']
+        ],
         transaction: t,
-      });
-      const orders = [];
-      for (let orderObj of user.Orders) {
-        const order = await OrderModel.findByPk(orderObj.id, {
-          include: [ProductModel],
-          transaction: t,
-        });
-        orders.push({ ...order.dataValues });
-        0;
-      }
+      })
       return orders;
     });
     return { status: "SUCCESS", result };
@@ -152,7 +151,7 @@ const changeVerifiedStatus = async (id, status) => {
 }
 
 export {
-changeUserPassword,
+  changeUserPassword,
   changeVerifiedStatus,
   modifyUser,
   retrieveUser,
