@@ -85,7 +85,7 @@ const verificationMailer = async function(user_email, token) {
     to: user_email,
     subject: "Verification Mail",
     text: `Click here to verify yourself. ${frontend_url}auth/verify?token=${token}`,
-    html: `<html> <head> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> <style> body { background-color: black; color: white; font-family: 'Roboto', sans-serif; } p { height:20rem; padding:2rem; font-size:20px; } a{ text-decoration:none; color: white; transition-duration: 150ms; } a:hover{ color:blue; font-style:italic; } </style> </head> <body> <h1>Hikmat</h1> <p>To verify, click this link, <a href="${frontend_url}auth/verify?token=${token}">Verify now</a></p> </body> </html>`
+    html: `<html> <head> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> <style> body { background-color: black; color: white; font-family: 'Roboto', sans-serif; } p { height:20rem; padding:2rem; font-size:20px; } a{ text-decoration:none; transition-duration: 150ms; } a:hover{ color:blue; font-style:italic; } </style> </head> <body> <h1>Hikmat</h1> <p>To verify, click this link, <a href="${frontend_url}auth/verify?token=${token}">Verify now</a></p> </body> </html>`
   }
   return nodemailer.createTransport(MailConfig).sendMail(MailObject)
 }
