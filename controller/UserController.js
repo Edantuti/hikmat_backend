@@ -11,7 +11,8 @@ import {
   createUser,
   retrieveUser,
   changeUserPassword,
-  modifyUser
+  modifyUser,
+  changeVerifiedStatus
 } from "../actions/UserAction.js";
 
 const postUserRegister = async (req, res) => {
