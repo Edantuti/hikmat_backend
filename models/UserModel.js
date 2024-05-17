@@ -1,7 +1,7 @@
-import { DataTypes } from 'sequelize'
-import { sequelize } from '../util.js'
+import { DataTypes } from "sequelize";
+import { sequelize } from "../util.js";
 
-export const UserModel = sequelize.define('User', {
+export const UserModel = sequelize.define("User", {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,

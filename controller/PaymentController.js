@@ -1,15 +1,15 @@
 import { RazorPayInstance } from "../util.js";
 import { createPayment } from "../actions/PaymentAction.js";
-import crypto from "crypto"
+import crypto from "crypto";
 const postPayment = async (req, res) => {
   try {
     const orders = await RazorPayInstance.orders.create(req.body);
-    res.json(orders)
+    res.json(orders);
   } catch (error) {
-    console.error(error)
-    res.json("error")
+    console.error(error);
+    res.json("error");
   }
-}
+};
 const postVerifyPayment = async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
@@ -20,19 +20,17 @@ const postVerifyPayment = async (req, res) => {
       .update(body.toString())
       .digest("hex");
     if (expectedSignature === razorpay_signature) {
-      await createPayment(req.body)
-      res.status(200).json({ url: `success?payment_id=${razorpay_payment_id}` })
+      await createPayment(req.body);
+      res
+        .status(200)
+        .json({ url: `success?payment_id=${razorpay_payment_id}` });
     } else {
-      res.status(403).json({ "message": "Invalid payment" })
+      res.status(403).json({ message: "Invalid payment" });
     }
-
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ "message": "Internal Server Error" })
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
-export {
-  postPayment,
-  postVerifyPayment
-}
+export { postPayment, postVerifyPayment };

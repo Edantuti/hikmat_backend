@@ -3,7 +3,7 @@ import { retrieveUser } from "./UserAction.js";
 import { sequelize } from "../util.js";
 import { ReviewModel } from "../models/ReviewModel.js";
 import { ProductModel } from "../models/ProductModel.js";
-import { UserModel } from "../models/UserModel.js"
+import { UserModel } from "../models/UserModel.js";
 const createReview = async (data) => {
   try {
     const userData = await retrieveUser({ id: data.userId });
@@ -17,7 +17,7 @@ const createReview = async (data) => {
       });
       const ratingValue = Math.floor(
         (product.getDataValue("rating") * reviewCount + parseInt(data.rating)) /
-        (reviewCount + 1),
+          (reviewCount + 1),
       );
 
       await ProductModel.update(
@@ -28,7 +28,7 @@ const createReview = async (data) => {
         { ...data, userId: data.userId },
         { transaction: t },
       );
-      review.setProduct(product, { transaction: t })
+      review.setProduct(product, { transaction: t });
       return review;
     });
     return { status: "SUCCESS", result: { ...result, User: userData } };
@@ -41,7 +41,6 @@ const createReview = async (data) => {
 const retrieveReview = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-
       const review = await ReviewModel.findAndCountAll({
         where: {
           ProductId: data.productId,
@@ -52,11 +51,17 @@ const retrieveReview = async (data) => {
         limit: 3,
         transaction: t,
       });
-      console.log(review)
+      console.log(review);
       review.rows.forEach(async (view) => {
-        const user = view.dataValues.User
-        return view.set("Users", user.set("profile_url", await getUrl(user.getDataValue("profile_url"))))
-      })
+        const user = view.dataValues.User;
+        return view.set(
+          "Users",
+          user.set(
+            "profile_url",
+            await getUrl(user.getDataValue("profile_url")),
+          ),
+        );
+      });
       return review;
     });
     return { status: "SUCCESS", result };
@@ -66,7 +71,4 @@ const retrieveReview = async (data) => {
   }
 };
 
-export {
-  retrieveReview,
-  createReview
-}
+export { retrieveReview, createReview };

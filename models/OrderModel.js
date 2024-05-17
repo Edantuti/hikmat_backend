@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize"
-import { sequelize } from "../util.js"
-import { PaymentModel } from "./PaymentModel.js"
-import { ProductModel } from "./ProductModel.js"
-import { UserModel } from "./UserModel.js"
+import { DataTypes } from "sequelize";
+import { sequelize } from "../util.js";
+import { PaymentModel } from "./PaymentModel.js";
+import { ProductModel } from "./ProductModel.js";
+import { UserModel } from "./UserModel.js";
 
 export const OrderModel = sequelize.define("Order", {
   id: {
@@ -43,9 +43,30 @@ export const OrderModel = sequelize.define("Order", {
 });
 
 OrderModel.belongsTo(UserModel, { foreignKey: "userId" });
-OrderModel.belongsTo(PaymentModel, { onDelete: "CASCADE", onUpdate: "RESTRICT", hooks: true, foreignKey: "paymentId", targetKey: "razorpay_payment_id" });
-OrderModel.belongsToMany(ProductModel, { through: "OrderProduct", foreignKey: "orderId", constraints: false, unique: false })
+OrderModel.belongsTo(PaymentModel, {
+  onDelete: "CASCADE",
+  onUpdate: "RESTRICT",
+  hooks: true,
+  foreignKey: "paymentId",
+  targetKey: "razorpay_payment_id",
+});
+OrderModel.belongsToMany(ProductModel, {
+  through: "OrderProduct",
+  foreignKey: "orderId",
+  constraints: false,
+  unique: false,
+});
 
-ProductModel.belongsToMany(OrderModel, { onDelete: 'CASCADE', through: 'OrderProduct', foreignKey: "productId", constraints: false, unique: false, hooks: true });
-UserModel.hasMany(OrderModel, { onDelete: "CASCADE", foreignKey: "userId", hooks: true });
-
+ProductModel.belongsToMany(OrderModel, {
+  onDelete: "CASCADE",
+  through: "OrderProduct",
+  foreignKey: "productId",
+  constraints: false,
+  unique: false,
+  hooks: true,
+});
+UserModel.hasMany(OrderModel, {
+  onDelete: "CASCADE",
+  foreignKey: "userId",
+  hooks: true,
+});

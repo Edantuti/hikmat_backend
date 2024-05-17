@@ -1,16 +1,17 @@
-import { sequelize } from "../util.js"
-import { ProductModel } from "../models/ProductModel.js"
-import { UserModel } from "../models/UserModel.js"
-import { PaymentModel } from "../models/PaymentModel.js"
-import { OrderModel } from "../models/OrderModel.js"
+import { sequelize } from "../util.js";
+import { ProductModel } from "../models/ProductModel.js";
+import { UserModel } from "../models/UserModel.js";
+import { PaymentModel } from "../models/PaymentModel.js";
+import { OrderModel } from "../models/OrderModel.js";
 const createOrder = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-
-      let productData = await ProductModel.findByPk(data.productId, { transaction: t })
-      productData.quantity -= data.quantity
-      productData.changed("quantity", true)
-      productData.save()
+      let productData = await ProductModel.findByPk(data.productId, {
+        transaction: t,
+      });
+      productData.quantity -= data.quantity;
+      productData.changed("quantity", true);
+      productData.save();
 
       const order = await OrderModel.create(
         {
@@ -25,58 +26,59 @@ const createOrder = async (data) => {
         },
         {
           include: [PaymentModel, ProductModel, UserModel],
-          transaction: t
-        }
-      )
+          transaction: t,
+        },
+      );
 
-      await order.addProducts(productData, { transaction: t })
-      return order
-    })
-    return { status: "SUCCESS", result }
+      await order.addProducts(productData, { transaction: t });
+      return order;
+    });
+    return { status: "SUCCESS", result };
   } catch (error) {
-    console.error(error)
-    return { status: "FAILED", error }
+    console.error(error);
+    return { status: "FAILED", error };
   }
-}
+};
 
 const modifyOrder = async (data, id) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const order = await OrderModel.update(data, { where: { id: id } }, { transaction: t })
-      return order
-    })
-    return { status: "SUCCESS", result }
+      const order = await OrderModel.update(
+        data,
+        { where: { id: id } },
+        { transaction: t },
+      );
+      return order;
+    });
+    return { status: "SUCCESS", result };
   } catch (error) {
-    console.error(error)
-    return { status: "FAILED", error }
+    console.error(error);
+    return { status: "FAILED", error };
   }
-}
+};
 
 const retrieveAllOrders = async () => {
   try {
     const result = await sequelize.transaction(async (t) => {
       const orders = await OrderModel.findAll({
-        transaction: t, include: [PaymentModel, ProductModel, {
-          model: UserModel,
-          attributes: { exclude: ["password", "updatedAt"] }
-        }],
-        order: [
-          ['createdAt', 'DESC']
-        ]
-      })
-      return orders
-    })
-    return { status: "SUCCESS", result }
+        transaction: t,
+        include: [
+          PaymentModel,
+          ProductModel,
+          {
+            model: UserModel,
+            attributes: { exclude: ["password", "updatedAt"] },
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      return orders;
+    });
+    return { status: "SUCCESS", result };
   } catch (error) {
-    console.error(error)
-    return { status: "FAILED", error }
+    console.error(error);
+    return { status: "FAILED", error };
   }
-}
+};
 
-
-
-export {
-  retrieveAllOrders,
-  modifyOrder,
-  createOrder,
-}
+export { retrieveAllOrders, modifyOrder, createOrder };

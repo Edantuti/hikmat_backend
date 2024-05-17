@@ -6,7 +6,6 @@ import { ReviewModel } from "../models/ReviewModel.js";
 import { UserModel } from "../models/UserModel.js";
 import { DealsModel } from "../models/DealsModel.js";
 const createProduct = async (data) => {
-
   try {
     const result = await sequelize.transaction(async (t) => {
       await createBrand({ name: data.brand });
@@ -20,7 +19,6 @@ const createProduct = async (data) => {
     return { status: "FAILED", error };
   }
 };
-
 
 const modifyProduct = async (data, id) => {
   //TODO:Creating a function which is going to delete changed data including photos
@@ -80,15 +78,13 @@ const retrieveProduct = async (data, offset = 0, limit = 12) => {
           {
             model: ProductModel,
             as: "ChildProduct",
-            include: [
-              { model: ReviewModel, include: [UserModel] }
-            ]
+            include: [{ model: ReviewModel, include: [UserModel] }],
           },
           {
             model: ReviewModel,
-            include: [UserModel]
+            include: [UserModel],
           },
-          DealsModel
+          DealsModel,
         ],
       });
 
@@ -104,24 +100,25 @@ const retrieveProduct = async (data, offset = 0, limit = 12) => {
 const removeProduct = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const product = await ProductModel.findByPk(
-        data.id, {
+      const product = await ProductModel.findByPk(data.id, {
         where: {
           id: data.id,
         },
         include: [CartModel, OrderModel, DealsModel],
         transaction: t,
-      },
+      });
+      await sequelize.query(
+        `DELETE FROM "ProductSimilarProduct" WHERE "ParentProductid"=?`,
+        { replacements: [data.id], type: QueryTypes.DELETE },
       );
-      await sequelize.query(`DELETE FROM "ProductSimilarProduct" WHERE "ParentProductid"=?`, { replacements: [data.id], type: QueryTypes.DELETE })
-      await sequelize.query(`DELETE FROM "ProductSimilarProduct" WHERE "ChildProductid"=?`, { replacements: [data.id], type: QueryTypes.DELETE })
-      if (product.Orders.length)
-        product.removeOrders()
-      if (product.Carts.length)
-        product.removeCarts()
-      if (product.Deals.length)
-        product.removeDeals()
-      await product.destroy({ transaction: t })
+      await sequelize.query(
+        `DELETE FROM "ProductSimilarProduct" WHERE "ChildProductid"=?`,
+        { replacements: [data.id], type: QueryTypes.DELETE },
+      );
+      if (product.Orders.length) product.removeOrders();
+      if (product.Carts.length) product.removeCarts();
+      if (product.Deals.length) product.removeDeals();
+      await product.destroy({ transaction: t });
       return product;
     });
     return { status: "SUCCESS", result };
@@ -131,10 +128,4 @@ const removeProduct = async (data) => {
   }
 };
 
-export{
-
-  retrieveProduct,
-  removeProduct,
-  createProduct,
-  modifyProduct,
-}
+export { retrieveProduct, removeProduct, createProduct, modifyProduct };

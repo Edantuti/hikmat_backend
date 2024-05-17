@@ -1,5 +1,5 @@
-import { DataTypes, QueryTypes } from "sequelize"
-import { sequelize } from "../util.js"
+import { DataTypes, QueryTypes } from "sequelize";
+import { sequelize } from "../util.js";
 
 export const ProductModel = sequelize.define("Product", {
   id: {
@@ -23,7 +23,7 @@ export const ProductModel = sequelize.define("Product", {
   },
   size: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
   category: {
     type: DataTypes.STRING,
@@ -72,30 +72,23 @@ export const ProductModel = sequelize.define("Product", {
   },
 });
 
-ProductModel.belongsToMany(ProductModel,
-  {
-    onDelete: "CASCADE",
-    through: 'ProductSimilarProduct',
-    foreignKey: {
-      name: "ParentProductid",
-      allowNull: true,
-    },
-    constraints: false,
-    as: "ParentProduct",
-    hooks: true
-  })
-ProductModel.belongsToMany(ProductModel,
-  {
-    through: 'ProductSimilarProduct',
-    foreignKey:
-    {
-      name: "ChildProductid",
-      allowNull: true
-    },
-    as: "ChildProduct",
-    constraints: false
-  })
-
-
-
-
+ProductModel.belongsToMany(ProductModel, {
+  onDelete: "CASCADE",
+  through: "ProductSimilarProduct",
+  foreignKey: {
+    name: "ParentProductid",
+    allowNull: true,
+  },
+  constraints: false,
+  as: "ParentProduct",
+  hooks: true,
+});
+ProductModel.belongsToMany(ProductModel, {
+  through: "ProductSimilarProduct",
+  foreignKey: {
+    name: "ChildProductid",
+    allowNull: true,
+  },
+  as: "ChildProduct",
+  constraints: false,
+});

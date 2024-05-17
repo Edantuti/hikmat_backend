@@ -1,38 +1,34 @@
-import { modifyAddress, retrieveAddress } from "../actions/AddressAction.js"
+import { modifyAddress, retrieveAddress } from "../actions/AddressAction.js";
 const getAddress = async (req, res) => {
   try {
     if (!req.query.userid) {
-      return res.status(400).json({ "message": "User id not specified" })
+      return res.status(400).json({ message: "User id not specified" });
     }
-    const data = await retrieveAddress(req.query.userid)
+    const data = await retrieveAddress(req.query.userid);
     if (data.status === "FAILED") {
-      return res.status(404).json({ "message": "User id not found" })
+      return res.status(404).json({ message: "User id not found" });
     }
-    return res.json(data)
+    return res.json(data);
   } catch (error) {
-    res.status(500).json({ "message": "Internal Server Error" })
-    return console.error(error)
+    res.status(500).json({ message: "Internal Server Error" });
+    return console.error(error);
   }
-}
+};
 
 const postAddress = async (req, res) => {
   try {
     if (!req.query.userid) {
-      return res.status(400).json({ "message": "User id not specified" })
+      return res.status(400).json({ message: "User id not specified" });
     }
     const data = await modifyAddress(req.body, req.query.userid);
     if (data.status === "FAILED") {
-      return res.status(400).json({ "message": "Invalid Details" })
+      return res.status(400).json({ message: "Invalid Details" });
     }
-    return res.json(data)
+    return res.json(data);
   } catch (error) {
-    res.status(500).json({ "message": "Internal Server Error" })
-    return console.error(error)
-
+    res.status(500).json({ message: "Internal Server Error" });
+    return console.error(error);
   }
-}
+};
 
-export {
-  getAddress,
-  postAddress
-}
+export { getAddress, postAddress };

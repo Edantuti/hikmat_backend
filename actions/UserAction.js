@@ -1,6 +1,6 @@
 import { UserModel } from "../models/UserModel.js";
-import { CartModel } from "../models/CartModel.js"
-import { OrderModel } from "../models/OrderModel.js"
+import { CartModel } from "../models/CartModel.js";
+import { OrderModel } from "../models/OrderModel.js";
 import { ProductModel } from "../models/ProductModel.js";
 import { sequelize } from "../util.js";
 import { DealsModel } from "../models/DealsModel.js";
@@ -16,7 +16,7 @@ const createUser = async (data) => {
     console.error(error);
     return { status: "FAILED", error };
   }
-}
+};
 const retrieveUser = async (data) => {
   try {
     const result = await sequelize.transaction(async (t) => {
@@ -34,34 +34,37 @@ const retrieveUser = async (data) => {
     console.error(error);
     return { status: "FAILED", error };
   }
-}
+};
 
 const changeUserPassword = async (password, email, id) => {
   try {
     await sequelize.transaction(async (t) => {
       await UserModel.update(
         {
-          password: password
+          password: password,
         },
         {
           where: {
             id: id,
-            email: email
+            email: email,
           },
-          transaction: t
-        }
-      )
-    })
-    return { status: "SUCCESS", message: "Password has been successfully changed." }
+          transaction: t,
+        },
+      );
+    });
+    return {
+      status: "SUCCESS",
+      message: "Password has been successfully changed.",
+    };
   } catch (errors) {
-    console.error(errors)
-    return { status: "FAILED", errors }
+    console.error(errors);
+    return { status: "FAILED", errors };
   }
-}
+};
 const modifyUser = async (data, id) => {
   try {
     const result = await sequelize.transaction(async (t) => {
-      const user = await UserModel.findByPk(id, { transaction: t })
+      const user = await UserModel.findByPk(id, { transaction: t });
       await user.update(
         {
           profile_url: data.profile_url,
@@ -72,7 +75,7 @@ const modifyUser = async (data, id) => {
         },
         { transaction: t },
       );
-      await user.save({ transaction: t })
+      await user.save({ transaction: t });
       return user;
     });
     return result;
@@ -83,19 +86,16 @@ const modifyUser = async (data, id) => {
 };
 
 const retrieveUserOrders = async (data) => {
-
   try {
     const result = await sequelize.transaction(async (t) => {
       const orders = await OrderModel.findAll({
         where: {
-          userId: data
+          userId: data,
         },
         include: [ProductModel],
-        order: [
-          ['createdAt', 'DESC']
-        ],
+        order: [["createdAt", "DESC"]],
         transaction: t,
-      })
+      });
       return orders;
     });
     return { status: "SUCCESS", result };
@@ -103,9 +103,8 @@ const retrieveUserOrders = async (data) => {
     console.error(error);
     return { status: "FAILED", error };
   }
-}
+};
 const retrieveUserCart = async (data) => {
-
   try {
     const result = await sequelize.transaction(async (t) => {
       const user = await UserModel.findByPk(data, {
@@ -133,7 +132,7 @@ const retrieveUserCart = async (data) => {
     console.error(error);
     return { status: "FAILED", error };
   }
-}
+};
 
 const changeVerifiedStatus = async (id, status) => {
   try {
@@ -148,7 +147,7 @@ const changeVerifiedStatus = async (id, status) => {
     console.error(error);
     return { status: "FAILED", error };
   }
-}
+};
 
 export {
   changeUserPassword,
@@ -158,4 +157,4 @@ export {
   retrieveUserCart,
   retrieveUserOrders,
   createUser,
-}
+};

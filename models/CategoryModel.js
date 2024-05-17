@@ -1,5 +1,5 @@
-import { DataTypes } from "sequelize"
-import { sequelize } from "../util.js"
+import { DataTypes } from "sequelize";
+import { sequelize } from "../util.js";
 
 export const CategoryModel = sequelize.define("Category", {
   id: {
@@ -7,14 +7,11 @@ export const CategoryModel = sequelize.define("Category", {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   name: {
     type: DataTypes.STRING,
     unique: true,
-    allowNull: false
-  }
-})
-
-
-
+    allowNull: false,
+  },
+});

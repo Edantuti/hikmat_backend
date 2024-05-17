@@ -1,6 +1,6 @@
-import { DataTypes } from "sequelize"
-import { sequelize } from "../util.js"
-import { UserModel } from "./UserModel.js"
+import { DataTypes } from "sequelize";
+import { sequelize } from "../util.js";
+import { UserModel } from "./UserModel.js";
 
 export const AddressModel = sequelize.define("Address", {
   id: {
@@ -8,7 +8,7 @@ export const AddressModel = sequelize.define("Address", {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
     allowNull: false,
-    unique: true
+    unique: true,
   },
   address: {
     type: DataTypes.TEXT,
@@ -16,17 +16,20 @@ export const AddressModel = sequelize.define("Address", {
   },
   city: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: false,
   },
   state: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: false,
   },
   pincode: {
     type: DataTypes.TEXT,
-    allowNull: false
-  }
-})
+    allowNull: false,
+  },
+});
 
-AddressModel.belongsTo(UserModel, { foreignKey: "userId", onDelete: "CASCADE", onUpdate: "RESTRICT" });
-
+AddressModel.belongsTo(UserModel, {
+  foreignKey: "userId",
+  onDelete: "CASCADE",
+  onUpdate: "RESTRICT",
+});

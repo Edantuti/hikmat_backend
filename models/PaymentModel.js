@@ -1,5 +1,5 @@
-import { sequelize } from "../util.js"
-import { DataTypes } from "sequelize"
+import { sequelize } from "../util.js";
+import { DataTypes } from "sequelize";
 
 export const PaymentModel = sequelize.define("Payment", {
   razorpay_payment_id: {
@@ -16,7 +16,5 @@ export const PaymentModel = sequelize.define("Payment", {
     type: DataTypes.TEXT,
     primaryKey: true,
     allowNull: false,
-  }
-})
-
-
+  },
+});
