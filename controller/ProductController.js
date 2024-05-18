@@ -7,6 +7,7 @@ import { retrieveReview, createReview } from "../actions/ReviewAction.js";
 import { backend_url } from "../config.js";
 const postProduct = async (req, res) => {
   let photos = [];
+
   for (let file of req.files) {
     photos.push(`${backend_url}/photos/${file.key}`);
   }
@@ -39,8 +40,6 @@ const getProducts = async (req, res) => {
 const patchProducts = async (req, res) => {
   let photos = [];
   if (typeof req.body.photos === "string") photos.push(req.body.photos);
-  else photos = req.body.photos;
-  console.log(photos);
   let id = req.query.id;
   for (let file of req.files) {
     photos.push(`${backend_url}/photos/${file.key}`);
