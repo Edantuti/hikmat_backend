@@ -63,9 +63,9 @@ const DatabaseConfig = {
   host: database_url,
   dialect: "postgres",
   dialectOptions: {
-    // ssl: {
-    //   require: database_ssl,
-    // },
+    ssl: {
+      require: database_ssl,
+    },
     dataString: true,
   },
 };
