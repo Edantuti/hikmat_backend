@@ -9,9 +9,9 @@ import { AuthCheckAdminMiddleware } from "../middleware/authentication.js";
 
 const CategoryRouter = Router();
 CategoryRouter.get("/categories", getCategory);
-CategoryRouter.post("/admin/category", AuthCheckAdminMiddleware, postCategory);
+CategoryRouter.post("/admin/categories", AuthCheckAdminMiddleware, postCategory);
 CategoryRouter.delete(
-  "/admin/category",
+  "/admin/categories",
   AuthCheckAdminMiddleware,
   deleteCategory,
 );

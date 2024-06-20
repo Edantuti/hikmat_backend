@@ -1,6 +1,7 @@
 import {
   retrieveProduct,
   modifyProduct,
+  createProduct,
   removeProduct,
 } from "../actions/ProductAction.js";
 import { retrieveReview, createReview } from "../actions/ReviewAction.js";
