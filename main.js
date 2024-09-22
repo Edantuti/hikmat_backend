@@ -50,7 +50,9 @@ app.use("/api", AddressRouter);
 app.use("/api", PaymentRouter);
 app.use("/api", ProductRouter);
 app.use("/api", UserRouter);
-
+app.get("/api", (req, res) => {
+  res.json({ message: "good" });
+});
 app.listen(port, async () => {
   console.log("Server has started.");
   connectDB(sequelize);
